@@ -1,6 +1,6 @@
 --- a/vmmon/Makefile
 +++ b/vmmon/Makefile
-@@ -43,7 +43,11 @@ INCLUDE      += -I$(SRCROOT)/shared
+@@ -43,7 +43,11 @@
  endif
  
  
