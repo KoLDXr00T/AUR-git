@@ -6,15 +6,15 @@
 
 pkgbase=virtualbox-bin
 pkgname=('virtualbox-bin' 'virtualbox-bin-guest-iso' 'virtualbox-bin-sdk')
-pkgver=7.0.14
-_build=161095
+pkgver=7.0.18
+_build=162988
 _rev=98942
 pkgrel=1
 pkgdesc='Powerful x86 virtualization for enterprise as well as home use (Oracle branded non-OSE)'
 arch=('x86_64')
 url='https://www.virtualbox.org/'
-license=('GPL2')
-makedepends=('python')
+license=('GPL-2.0-only')
+makedepends=('python' 'python-setuptools')
 source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver}-${_build}-Linux_amd64.run"
         "https://download.virtualbox.org/virtualbox/${pkgver}/VirtualBoxSDK-${pkgver}-${_build}.zip"
         "VBoxAuth-r${_rev}.h"::"https://www.virtualbox.org/svn/vbox/trunk/include/VBox/VBoxAuth.h?p=${_rev}"
@@ -28,8 +28,8 @@ source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver
         'LICENSE.sdk'
         '013-Makefile.patch')
 noextract=("VirtualBoxSDK-${pkgver}-${_build}.zip")
-sha256sums=('58c0f1b0de280182736189365893405d498012decef1ef4a8bc79c68dd215fa6'
-            '3947b671785ed79f6d66affd66cac359feeab632fbd621e35030dbf3488cc502'
+sha256sums=('0f838f0ccccc2a8c9ce901eb17ec8785aab580c97d5269c175baa90ea72ca317'
+            'ac3ec1c92aef588b891f5817b66e11a6d51aab36818d75cea873fcb6f9c1b8fd'
             '13a6c51c5c6429e93b99a6bef5d56ebccf7437fb9bab20ad279cbb02c1ac80e1'
             '82b26130150c26d46c9951da71bc3a53e0aa1684b1350c13397f4eb625bfb2ed'
             'c0de86185f46cb6f8933c848c9bd1e1824b594089aa0094b44d7a0d25d9f5546'
