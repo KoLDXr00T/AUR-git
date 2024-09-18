@@ -6,14 +6,14 @@
 
 pkgbase=virtualbox-bin
 pkgname=('virtualbox-bin' 'virtualbox-bin-guest-iso' 'virtualbox-bin-sdk')
-pkgver=7.0.20
-_build=163906
+pkgver=7.1.0
+_build=164728
 _rev=98942
 pkgrel=1
 pkgdesc='Powerful x86 virtualization for enterprise as well as home use (Oracle branded non-OSE)'
 arch=('x86_64')
 url='https://www.virtualbox.org/'
-license=('GPL-2.0-only')
+license=('GPL-3.0-only')
 makedepends=('python' 'python-setuptools')
 source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver}-${_build}-Linux_amd64.run"
         "https://download.virtualbox.org/virtualbox/${pkgver}/VirtualBoxSDK-${pkgver}-${_build}.zip"
@@ -28,8 +28,8 @@ source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver
         'LICENSE.sdk'
         '013-Makefile.patch')
 noextract=("VirtualBoxSDK-${pkgver}-${_build}.zip")
-sha256sums=('2b4c3522987cd7c97f54757de1e1afa106b725f99080d0c38ddf0448941ebf6b'
-            '2061dc126059fe74c2a3432d58ab8d62f58519c655642d79206e2169aff6c6a1'
+sha256sums=('4335e4b787f0910dcd1f0a25388836a3017aaaf07d3b9e4cdcb17c3cc959d26c'
+            '00d76c8a2b8ab2f9b0d6d7c899b8fc5359bbe3c350dd8cc011579913cba8ad22'
             '13a6c51c5c6429e93b99a6bef5d56ebccf7437fb9bab20ad279cbb02c1ac80e1'
             '82b26130150c26d46c9951da71bc3a53e0aa1684b1350c13397f4eb625bfb2ed'
             'c0de86185f46cb6f8933c848c9bd1e1824b594089aa0094b44d7a0d25d9f5546'
@@ -59,7 +59,7 @@ prepare() {
 }
 
 build() {
-    cd "${pkgname}-${pkgver}/sdk/installer"
+    cd "${pkgname}-${pkgver}/sdk/installer/python"
     VBOX_INSTALL_PATH='/opt/VirtualBox' python vboxapisetup.py build
 }
 
@@ -162,7 +162,7 @@ package_virtualbox-bin-guest-iso() {
 package_virtualbox-bin-sdk() {
     pkgdesc='VirtualBox software developer kit for use with virtualbox-bin package'
     arch=('any')
-    license=('LGPL2.1' 'GPL2' 'BSD' 'custom')
+    license=('LGPL-2.1-only' 'GPL-3.0-only' 'LicenseRef-Custom')
     depends=('python')
     optdepends=('java-runtime: for webservice java bindings')
     provides=('virtualbox-sdk')
@@ -182,6 +182,6 @@ package_virtualbox-bin-sdk() {
     install -D -m644 "VBoxAuthSimple-r${_rev}.cpp" "${pkgdir}/${_installdir}/sdk/bindings/auth/VBoxAuthSimple.cpp"
     install -D -m644 LICENSE.sdk "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
     
-    cd "${pkgbase}-${pkgver}/sdk/installer"
+    cd "${pkgbase}-${pkgver}/sdk/installer/python"
     VBOX_INSTALL_PATH="/${_installdir}" python vboxapisetup.py install --root "$pkgdir" --skip-build --optimize='1'
 }
