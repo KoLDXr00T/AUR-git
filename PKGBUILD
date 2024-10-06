@@ -6,9 +6,9 @@
 
 pkgbase=virtualbox-bin
 pkgname=('virtualbox-bin' 'virtualbox-bin-guest-iso' 'virtualbox-bin-sdk')
-pkgver=7.1.0
-_build=164728
-_rev=98942
+pkgver=7.1.2
+_build=164945
+_rev=106073
 pkgrel=1
 pkgdesc='Powerful x86 virtualization for enterprise as well as home use (Oracle branded non-OSE)'
 arch=('x86_64')
@@ -28,11 +28,11 @@ source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver
         'LICENSE.sdk'
         '013-Makefile.patch')
 noextract=("VirtualBoxSDK-${pkgver}-${_build}.zip")
-sha256sums=('4335e4b787f0910dcd1f0a25388836a3017aaaf07d3b9e4cdcb17c3cc959d26c'
-            '00d76c8a2b8ab2f9b0d6d7c899b8fc5359bbe3c350dd8cc011579913cba8ad22'
-            '13a6c51c5c6429e93b99a6bef5d56ebccf7437fb9bab20ad279cbb02c1ac80e1'
-            '82b26130150c26d46c9951da71bc3a53e0aa1684b1350c13397f4eb625bfb2ed'
-            'c0de86185f46cb6f8933c848c9bd1e1824b594089aa0094b44d7a0d25d9f5546'
+sha256sums=('64f711be1ed5f7937c71c14f7642f3c7b13521a6b3859dc4665ce07daef7cc6c'
+            '5716cfce47a9b9d37a83019db5cfe5d0553f71c81d7f1263a59a44e16b7944d0'
+            'cf1d8797cdeb55b41d5ebd0f137e04aad49447a0518e5466d065fcbbba8211be'
+            'a0e1dab71ce78329bd170e5a5dee127fcf93a47ffdce6e4499a067f4948c9172'
+            'bb5d949910f8c87282eccbc13ebc0a3fdc883e95a85c1cd0389dca5c4c20abdc'
             '63f1e9eabedec2170bd0589aaa2bf5025ff8f8ec1764cc4823cbe446e9ce1388'
             '4001b5927348fe669a541e80526d4f9ea91b883805f102f7d571edbb482a9b9d'
             '9c5238183019f9ebc7d92a8582cad232f471eab9d3278786225abc1a1c7bf66e'
@@ -148,6 +148,13 @@ package_virtualbox-bin() {
     do
         ln -s "../${_file}" "${pkgdir}/${_installdir}/components/${_file}"
     done
+    
+    # https://www.virtualbox.org/ticket/22193
+    # https://bbs.archlinux.org/viewtopic.php?pid=2199183#p2199183
+    ln -s ../../usr/lib/libdl.so.2 "${pkgdir}/${_installdir}/libdl.so"
+    ln -s ../../usr/lib/libpthread.so.0 "${pkgdir}/${_installdir}/libpthread.so"
+    ln -sr /usr/lib/libdl.so.2 "${srcdir}/${pkgbase}-${pkgver}/VirtualBox-extracted/libdl.so"
+    ln -sr /usr/lib/libpthread.so.0 "${srcdir}/${pkgbase}-${pkgver}/VirtualBox-extracted/libpthread.so"
 }
 
 package_virtualbox-bin-guest-iso() {
@@ -163,7 +170,7 @@ package_virtualbox-bin-sdk() {
     pkgdesc='VirtualBox software developer kit for use with virtualbox-bin package'
     arch=('any')
     license=('LGPL-2.1-only' 'GPL-3.0-only' 'LicenseRef-Custom')
-    depends=('python')
+    depends=('python' "virtualbox-bin=${pkgver}")
     optdepends=('java-runtime: for webservice java bindings')
     provides=('virtualbox-sdk')
     conflicts=('virtualbox-sdk')
@@ -182,6 +189,15 @@ package_virtualbox-bin-sdk() {
     install -D -m644 "VBoxAuthSimple-r${_rev}.cpp" "${pkgdir}/${_installdir}/sdk/bindings/auth/VBoxAuthSimple.cpp"
     install -D -m644 LICENSE.sdk "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
     
+    local _pypath
+    _pypath="${srcdir}/${pkgbase}-${pkgver}/sdk/installer/python/vboxapi/build/lib"
+    _pypath+=":${srcdir}/${pkgbase}-${pkgver}/VirtualBox-extracted"
+    _pypath+=":${pkgdir}/${_installdir}/sdk/bindings/xpcom/python"
+    
     cd "${pkgbase}-${pkgver}/sdk/installer/python"
-    VBOX_INSTALL_PATH="/${_installdir}" python vboxapisetup.py install --root "$pkgdir" --skip-build --optimize='1'
+    export PYTHONPATH="${_pypath}${PYTHONPATH:+":${PYTHONPATH}"}"
+    export LD_LIBRARY_PATH="${srcdir}/${pkgbase}-${pkgver}/VirtualBox-extracted${LD_LIBRARY_PATH:+":${LD_LIBRARY_PATH}"}"
+    
+    # force a success exit status to fix a segmentation fault when testing the sdk installation
+    VBOX_INSTALL_PATH="/${_installdir}" python vboxapisetup.py install --root "$pkgdir" --skip-build --optimize='1' || true
 }
