@@ -9,7 +9,7 @@ pkgname=('virtualbox-bin' 'virtualbox-bin-guest-iso' 'virtualbox-bin-sdk')
 pkgver=7.1.4
 _build=165100
 _rev=106073
-pkgrel=1
+pkgrel=2
 pkgdesc='Powerful x86 virtualization for enterprise as well as home use (Oracle branded non-OSE)'
 arch=('x86_64')
 url='https://www.virtualbox.org/'
@@ -24,6 +24,7 @@ source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver
         'vboxreload'
         '60-vboxdrv.rules'
         'vboxweb.service'
+        'virtualbox.modprobe'
         'virtualbox.sysusers'
         'LICENSE.sdk'
         '013-Makefile.patch')
@@ -37,6 +38,7 @@ sha256sums=('10239104eaea3f8985a5933eab80e4ef2b496ab57ad9fe463a951c09298ebb0b'
             '4001b5927348fe669a541e80526d4f9ea91b883805f102f7d571edbb482a9b9d'
             '9c5238183019f9ebc7d92a8582cad232f471eab9d3278786225abc1a1c7bf66e'
             'e6e875ef186578b53106d7f6af48e426cdaf1b4e86834f01696b8ef1c685787f'
+            '07fe5c8b313cd7f01505eb9721357269a288ccd0c04e6467afb954038d6f46df'
             '2101ebb58233bbfadf3aa74381f22f7e7e508559d2b46387114bc2d8e308554c'
             '09335d7d1075df02d29cec13119538134efdf43ea73a93b0f89d0d7d4b6625a1'
             'a3ec0cab869e2d64914bffbf1c11a3c571808438656af654932f96e7a69114fd')
@@ -95,6 +97,9 @@ package_virtualbox-bin() {
     # module reloading shortcut (with a symlink with default helper)
     install -D -m755 vboxreload -t "${pkgdir}/usr/bin"
     ln -s vboxreload "${pkgdir}/usr/bin/rcvboxdrv"
+    
+    # do not enable KVM virtualization on module load
+    install -D -m0644 virtualbox.modprobe "${pkgdir}/usr/lib/modprobe.d/virtualbox.conf"
     
     # udev rules
     ## we need to copy and not symlink VBoxCreateUSBNode.sh in /usr/lib/udev to avoid udevd
