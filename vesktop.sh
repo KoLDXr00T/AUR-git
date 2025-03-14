@@ -7,6 +7,6 @@ if [ -f "$XDG_CONFIG_HOME/vesktop-flags.conf" ]; then
     VESKTOP_USER_FLAGS="$(grep -v '^#' "$XDG_CONFIG_HOME/vesktop-flags.conf")"
 fi
 
-# Launch
-# shellcheck disable=SC2086 (We do want to split VESKTOP_USER_FLAGS)
+# Launch (each word in VESKTOP_USER_FLAGS must be split)
+# shellcheck disable=SC2086
 exec /usr/lib/vesktop/vesktop $VESKTOP_USER_FLAGS "$@"
