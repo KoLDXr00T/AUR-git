@@ -1,4 +1,5 @@
-# Maintainer: Jean-Marc Lenoir <archlinux "at" jihemel "dot" com>
+# Maintainer: Julian Xhokaxhiu <https://julianxhokaxhiu.com>
+# Contributor: Jean-Marc Lenoir <archlinux "at" jihemel "dot" com>
 # Contributor: Maxwell Pray a.k.a. Synthead <synthead@gmail.com>
 
 # To enable macOS guests support, uncomment the line below:
