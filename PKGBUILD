@@ -5,16 +5,24 @@
 # Contributor: M0Rf30
 
 pkgbase=virtualbox-bin
-pkgname=('virtualbox-bin' 'virtualbox-bin-guest-iso' 'virtualbox-bin-sdk')
-pkgver=7.1.6
-_build=167084
+pkgname=(
+    'virtualbox-bin'
+    'virtualbox-bin-guest-iso'
+    'virtualbox-bin-sdk')
+pkgver=7.1.8
+_build=168469
 _rev=106073
 pkgrel=1
 pkgdesc='Powerful x86 virtualization for enterprise as well as home use (Oracle branded non-OSE)'
 arch=('x86_64')
 url='https://www.virtualbox.org/'
 license=('GPL-3.0-only')
-makedepends=('python' 'python-setuptools')
+makedepends=(
+    'python'
+    'python-build'
+    'python-installer'
+    'python-setuptools'
+    'python-wheel')
 source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver}-${_build}-Linux_amd64.run"
         "https://download.virtualbox.org/virtualbox/${pkgver}/VirtualBoxSDK-${pkgver}-${_build}.zip"
         "VBoxAuth-r${_rev}.h"::"https://www.virtualbox.org/svn/vbox/trunk/include/VBox/VBoxAuth.h?p=${_rev}"
@@ -29,8 +37,8 @@ source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver
         'LICENSE.sdk'
         '013-Makefile.patch')
 noextract=("VirtualBoxSDK-${pkgver}-${_build}.zip")
-sha256sums=('7da04b0a27f4502ffb792e356013c61b78c293e9a2cb9b33fdb846603d46dad9'
-            '3762fbd3606a748d7c5734cb02b346ec31a5aae1314bc6a68cbad2e35e2d62db'
+sha256sums=('fc2aa1c36ea927e1c0808903a166f07452692e1d6f64f6a278f470ffcd7e81a4'
+            'b7cbff74970b7558fefd64e402b599bbfce0b32c74b657d0f4937bbbe5336e11'
             'cf1d8797cdeb55b41d5ebd0f137e04aad49447a0518e5466d065fcbbba8211be'
             'a0e1dab71ce78329bd170e5a5dee127fcf93a47ffdce6e4499a067f4948c9172'
             'bb5d949910f8c87282eccbc13ebc0a3fdc883e95a85c1cd0389dca5c4c20abdc'
@@ -44,13 +52,13 @@ sha256sums=('7da04b0a27f4502ffb792e356013c61b78c293e9a2cb9b33fdb846603d46dad9'
             'a3ec0cab869e2d64914bffbf1c11a3c571808438656af654932f96e7a69114fd')
 
 prepare() {
-    local _extractdir="${pkgname}-${pkgver}/VirtualBox-extracted"
+    local _extractdir="${pkgbase}-${pkgver}/VirtualBox-extracted"
     
     # extract files
     mkdir -p "$_extractdir"
-    sh "VirtualBox-${pkgver}-${_build}-Linux_amd64.run" --noexec --nox11 --target "${pkgname}-${pkgver}"
-    bsdtar -xf "${pkgname}-${pkgver}/VirtualBox.tar.bz2" -C "$_extractdir"
-    bsdtar -xf "VirtualBoxSDK-${pkgver}-${_build}.zip" -C "${pkgname}-${pkgver}"
+    sh "VirtualBox-${pkgver}-${_build}-Linux_amd64.run" --noexec --nox11 --target "${pkgbase}-${pkgver}"
+    bsdtar -xf "${pkgbase}-${pkgver}/VirtualBox.tar.bz2" -C "$_extractdir"
+    bsdtar -xf "VirtualBoxSDK-${pkgver}-${_build}.zip" -C "${pkgbase}-${pkgver}"
     
     # dkms configuration
     install -D -m644 dkms.conf -t "${_extractdir}/src/vboxhost"
@@ -61,16 +69,36 @@ prepare() {
 }
 
 build() {
-    cd "${pkgname}-${pkgver}/sdk/installer/python"
-    VBOX_INSTALL_PATH='/opt/VirtualBox' python vboxapisetup.py build
+    cd "${pkgbase}-${pkgver}/sdk/installer/python/vboxapi"
+    VBOX_INSTALL_PATH='/opt/VirtualBox' python -m build --wheel --no-isolation
 }
 
 package_virtualbox-bin() {
-    depends=('device-mapper' 'dkms' 'fontconfig' 'hicolor-icon-theme' 'libgl'
-             'libidl2' 'libxcursor' 'libxinerama' 'libxmu' 'python' 'sdl')
-    optdepends=('virtualbox-bin-guest-iso: for guest additions CD image'
-                'virtualbox-bin-sdk: for the software developer kit'
-                'virtualbox-ext-oracle: for Oracle extensions pack')
+    depends=(
+        'bash'
+        'device-mapper'
+        'dkms'
+        'fontconfig'
+        'freetype2'
+        'gcc-libs'
+        'glib2'
+        'glibc'
+        'hicolor-icon-theme'
+        'libgl'
+        'libidl2'
+        'libx11'
+        'libxcb'
+        'libxcursor'
+        'libxinerama'
+        'libxmu'
+        'libxt'
+        'python'
+        'sdl'
+        'zlib')
+    optdepends=(
+        'virtualbox-bin-guest-iso: for guest additions CD image'
+        'virtualbox-bin-sdk: for the software developer kit'
+        'virtualbox-ext-oracle: for Oracle extensions pack')
     provides=("virtualbox=${pkgver}" 'virtualbox-host-dkms' 'VIRTUALBOX-HOST-MODULES')
     conflicts=('virtualbox' 'virtualbox-host-dkms' 'virtualbox-host-modules-arch')
     replaces=('virtualbox_bin' 'virtualbox-sun')
@@ -81,7 +109,7 @@ package_virtualbox-bin() {
     
     # install bundled files
     install -d -m755 "${pkgdir}/opt"
-    cp -Pr --no-preserve='ownership' "${pkgname}-${pkgver}/VirtualBox-extracted" "${pkgdir}/${_installdir}"
+    cp -Pr --no-preserve='ownership' "${pkgbase}-${pkgver}/VirtualBox-extracted" "${pkgdir}/${_installdir}"
     
     # mark binaries suid root, and make sure the directory is only writable by the user
     chmod 4755 "${pkgdir}/${_installdir}"/{VirtualBoxVM,VBox{Headless,Net{AdpCtl,DHCP,NAT},VolInfo}}
@@ -90,7 +118,7 @@ package_virtualbox-bin() {
     # remove guest iso and bundled sdk files
     rm -r "${pkgdir}/${_installdir}"/{additions/VBoxGuestAdditions.iso,sdk}
     
-    # module sources
+    # module sources_pypath
     install -d -m755 "${pkgdir}/usr/src"
     mv "${pkgdir}/${_installdir}/src/vboxhost" "${pkgdir}/usr/src/vboxhost-${pkgver}_non_OSE"
     
@@ -175,7 +203,7 @@ package_virtualbox-bin-sdk() {
     pkgdesc='VirtualBox software developer kit for use with virtualbox-bin package'
     arch=('any')
     license=('LGPL-2.1-only' 'GPL-3.0-only' 'LicenseRef-Custom')
-    depends=('python' "virtualbox-bin=${pkgver}")
+    depends=('python')
     optdepends=('java-runtime: for webservice java bindings')
     provides=('virtualbox-sdk')
     conflicts=('virtualbox-sdk')
@@ -194,15 +222,9 @@ package_virtualbox-bin-sdk() {
     install -D -m644 "VBoxAuthSimple-r${_rev}.cpp" "${pkgdir}/${_installdir}/sdk/bindings/auth/VBoxAuthSimple.cpp"
     install -D -m644 LICENSE.sdk "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
     
-    local _pypath
-    _pypath="${srcdir}/${pkgbase}-${pkgver}/sdk/installer/python/vboxapi/build/lib"
-    _pypath+=":${srcdir}/${pkgbase}-${pkgver}/VirtualBox-extracted"
-    _pypath+=":${pkgdir}/${_installdir}/sdk/bindings/xpcom/python"
+    python -m installer --destdir="$pkgdir" "${pkgbase}-${pkgver}/sdk/installer/python/vboxapi/dist"/*.whl
     
-    cd "${pkgbase}-${pkgver}/sdk/installer/python"
-    export PYTHONPATH="${_pypath}${PYTHONPATH:+":${PYTHONPATH}"}"
-    export LD_LIBRARY_PATH="${srcdir}/${pkgbase}-${pkgver}/VirtualBox-extracted${LD_LIBRARY_PATH:+":${LD_LIBRARY_PATH}"}"
-    
-    # force a success exit status to fix a segmentation fault when testing the sdk installation
-    VBOX_INSTALL_PATH="/${_installdir}" python vboxapisetup.py install --root "$pkgdir" --skip-build --optimize='1' || true
+    local _sitepkgs
+    _sitepkgs="$(python -c 'import site; print(site.getsitepackages()[0])')"
+    ln -s "../../../../${_installdir}/sdk/bindings/xpcom/python/xpcom" "${pkgdir}${_sitepkgs}/xpcom"
 }
