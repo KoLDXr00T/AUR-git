@@ -18,7 +18,7 @@ pkgname=vmware-workstation
 pkgver=17.6.3
 _buildver=24583834
 _pkgver=${pkgver}_${_buildver}
-pkgrel=5
+pkgrel=6
 _tools_version=12.5.0-24276846
 _legacy_ver=17.5.2
 _legacy_buildver=23775571
@@ -46,6 +46,7 @@ depends=(
   pcsclite
   hicolor-icon-theme
   libxcrypt-compat # needed for ovftool
+  libxml2-legacy # needed for vmrun
   # needed to use Arch GTK3 library (for theme integration)
   gtk3
   gcr
