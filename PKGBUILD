@@ -133,7 +133,7 @@ if [ -n "$_enable_macOS_guests" ]; then
 _vmware_fusion_ver=13.5.2
 _vmware_fusion_buildver=23775688
 _vmware_fusion_ver_full=${_vmware_fusion_ver}_${_vmware_fusion_buildver}
-# List of VMware Fusion versions: https://softwareupdate-dev.broadcom.com/cds/vmw-desktop/fusion/
+# List of VMware Fusion versions: https://softwareupdate-prod.broadcom.com/cds/vmw-desktop/fusion/index.html
 
 makedepends+=(
   python
