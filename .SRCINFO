@@ -1,6 +1,6 @@
 pkgbase = virtualbox-bin
 	pkgdesc = Powerful x86 virtualization for enterprise as well as home use (Oracle branded non-OSE)
-	pkgver = 7.1.10
+	pkgver = 7.1.12
 	pkgrel = 1
 	url = https://www.virtualbox.org/
 	arch = x86_64
@@ -10,9 +10,9 @@ pkgbase = virtualbox-bin
 	makedepends = python-installer
 	makedepends = python-setuptools
 	makedepends = python-wheel
-	noextract = VirtualBoxSDK-7.1.10-169112.zip
-	source = http://download.virtualbox.org/virtualbox/7.1.10/VirtualBox-7.1.10-169112-Linux_amd64.run
-	source = https://download.virtualbox.org/virtualbox/7.1.10/VirtualBoxSDK-7.1.10-169112.zip
+	noextract = VirtualBoxSDK-7.1.12-169651.zip
+	source = http://download.virtualbox.org/virtualbox/7.1.12/VirtualBox-7.1.12-169651-Linux_amd64.run
+	source = https://download.virtualbox.org/virtualbox/7.1.12/VirtualBoxSDK-7.1.12-169651.zip
 	source = VBoxAuth-r106073.h::https://www.virtualbox.org/svn/vbox/trunk/include/VBox/VBoxAuth.h?p=106073
 	source = VBoxAuthPAM-r106073.c::https://www.virtualbox.org/svn/vbox/trunk/src/VBox/HostServices/auth/pam/VBoxAuthPAM.c?p=106073
 	source = VBoxAuthSimple-r106073.cpp::https://www.virtualbox.org/svn/vbox/trunk/src/VBox/HostServices/auth/simple/VBoxAuthSimple.cpp?p=106073
@@ -24,8 +24,8 @@ pkgbase = virtualbox-bin
 	source = virtualbox.sysusers
 	source = LICENSE.sdk
 	source = 013-Makefile.patch
-	sha256sums = 1be59b8a94640ce15c46643108ee903f15b7f1937d6d3b2c74dae1c1b2f76451
-	sha256sums = 014f60e759025f65c4d9c2ec8f9626f145d606705e1b74f542169834d6f9541a
+	sha256sums = 5b396459d9a9dc91ca8ef2c569f9dabc5962d9865a2efbd547d4e185429507f4
+	sha256sums = e76f7a224d47ed743c42caab3dfd2792f1e3b5e86f04fa9b8b4ca900879c3622
 	sha256sums = cf1d8797cdeb55b41d5ebd0f137e04aad49447a0518e5466d065fcbbba8211be
 	sha256sums = a0e1dab71ce78329bd170e5a5dee127fcf93a47ffdce6e4499a067f4948c9172
 	sha256sums = bb5d949910f8c87282eccbc13ebc0a3fdc883e95a85c1cd0389dca5c4c20abdc
@@ -62,7 +62,7 @@ pkgname = virtualbox-bin
 	optdepends = virtualbox-bin-guest-iso: for guest additions CD image
 	optdepends = virtualbox-bin-sdk: for the software developer kit
 	optdepends = virtualbox-ext-oracle: for Oracle extensions pack
-	provides = virtualbox=7.1.10
+	provides = virtualbox=7.1.12
 	provides = virtualbox-host-dkms
 	provides = VIRTUALBOX-HOST-MODULES
 	conflicts = virtualbox
