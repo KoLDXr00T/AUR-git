@@ -18,13 +18,7 @@ pkgname=vmware-workstation
 pkgver=17.6.4
 _buildver=24832109
 _pkgver=${pkgver}_${_buildver}
-pkgrel=3
-_tools_version=12.5.0-24276846
-_legacy_cdn_ver=17.6.3
-_legacy_cdn_buildver=24583834
-_legacy_ver=17.5.2
-_legacy_buildver=23775571
-_legacy_tools_version=12.4.0_23259341
+pkgrel=4
 pkgdesc='The industry standard for running multiple operating systems as virtual machines on a single Linux PC.'
 arch=(x86_64)
 url='https://www.vmware.com/products/workstation-for-linux.html'
@@ -64,18 +58,8 @@ backup=(
   'etc/conf.d/vmware'
 )
 
-DLAGENTS=("https::/usr/bin/curl -fLC - --connect-to softwareupdate-prod.broadcom.com:443:softwareupdate-prod.broadcom.com.cdn.cloudflare.net:443 --retry 3 --retry-delay 3 -o %o %u")
-
 source=(
   "VMware-Workstation-${pkgver}-${_buildver}.${CARCH}.bundle::https://archive.org/download/vmware-workstation-full-${pkgver}-${_buildver}.${CARCH}/VMware-Workstation-Full-${pkgver}-${_buildver}.${CARCH}.bundle"
-  "https://softwareupdate-prod.broadcom.com/cds/vmw-desktop/ws/${_legacy_ver}/${_legacy_buildver}/linux/packages/vmware-tools-linux-${_legacy_tools_version/_/-}.${CARCH}.component.tar"
-  "https://softwareupdate-prod.broadcom.com/cds/vmw-desktop/ws/${_legacy_ver}/${_legacy_buildver}/linux/packages/vmware-tools-linuxPreGlibc25-${_legacy_tools_version/_/-}.${CARCH}.component.tar"
-  "https://softwareupdate-prod.broadcom.com/cds/vmw-desktop/ws/${_legacy_ver}/${_legacy_buildver}/linux/packages/vmware-tools-netware-${_legacy_tools_version/_/-}.${CARCH}.component.tar"
-  "https://softwareupdate-prod.broadcom.com/cds/vmw-desktop/ws/${_legacy_ver}/${_legacy_buildver}/linux/packages/vmware-tools-solaris-${_legacy_tools_version/_/-}.${CARCH}.component.tar"
-  "vmware-tools-windows-${_tools_version/_/-}-${pkgver}.${CARCH}.component.tar::https://softwareupdate-prod.broadcom.com/cds/vmw-desktop/ws/${_legacy_cdn_ver}/${_legacy_cdn_buildver}/linux/packages/vmware-tools-windows-${_tools_version/_/-}.${CARCH}.component.tar"
-  "vmware-tools-windows-x86-${_tools_version/_/-}-${pkgver}.${CARCH}.component.tar::https://softwareupdate-prod.broadcom.com/cds/vmw-desktop/ws/${_legacy_cdn_ver}/${_legacy_cdn_buildver}/linux/packages/vmware-tools-windows-x86-${_tools_version/_/-}.${CARCH}.component.tar"
-  "https://softwareupdate-prod.broadcom.com/cds/vmw-desktop/ws/${_legacy_ver}/${_legacy_buildver}/linux/packages/vmware-tools-winPre2k-${_legacy_tools_version/_/-}.${CARCH}.component.tar"
-  "https://softwareupdate-prod.broadcom.com/cds/vmw-desktop/ws/${_legacy_ver}/${_legacy_buildver}/linux/packages/vmware-tools-winPreVista-${_legacy_tools_version/_/-}.${CARCH}.component.tar"
 
   "winVistaSP1.iso::https://packages-prod.broadcom.com/tools/frozen/windows/WindowsToolsVista/SP1/windows.iso"
   "winVistaSP2.iso::https://packages-prod.broadcom.com/tools/frozen/windows/WindowsToolsVista/SP2/windows.iso"
@@ -100,14 +84,6 @@ source=(
   'linux6_16.patch'
 )
 sha256sums=('64fbfbaeacc48865468114362a2bbaade9110cc9e87bc3bd938396ba7f19a9bd'
-            'd862be0d12796134b40e5ffc7534a5e6161b8898355fe32ca8f705a3806cbfe4'
-            'd79f79f17e5f37399046d16be3967e0cff3c9474e2cb6ea3f2c3ebea3ff68cea'
-            '4643fff3ed4f8af5a56a1c4c2084fa7327d78e58ee9b0687b98390a4b4a1ac14'
-            '196c842f758b813afb202b0db2d09d457fccafac212ca41ef3277dfe9ceaf9ec'
-            '81b63fd7f3a7f9f7b24cddb8712a592b4b3c9f269338a8897c55146c9766a18b'
-            '5078060e520cf1491d1585d9b85a311bfcde1da080fc527512840d44040eb137'
-            'd4e9884f5f11cef4e261023d895eba5b57a8a80623bff0de8b3f1c47154b2a11'
-            '20abd21da43ac31741f8bb26db1ae7d8f4ef4c5082c9a2cc3ae5da494f1b9529'
             '3b8f9d6e43f5d1dff0576cb93d008c14e0434d7233872f6c63988513d2bda5d1'
             '8f1cc3181055891b98672f715e0ca7bbe4018960eae945d7a4b9f640c44c3d79'
             '12e7b16abf8d7e858532edabb8868919c678063c566a6535855b194aac72d55e'
@@ -133,9 +109,6 @@ depends+=(
   vmware-keymaps
 )
 fi
-
-
-_isoimages=(linux linuxPreGlibc25 netware solaris windows windows-x86 winPre2k winPreVista)
 
 if [ -n "$_enable_macOS_guests" ]; then
 
@@ -177,12 +150,6 @@ _create_database_file() {
   sqlite3 "$database_filename" "INSERT INTO settings(key,value,component_name) VALUES('db.schemaVersion','2','vmware-installer');"
   sqlite3 "$database_filename" "CREATE TABLE components(id INTEGER PRIMARY KEY, name VARCHAR NOT NULL, version VARCHAR NOT NULL, buildNumber INTEGER NOT NULL, component_core_id INTEGER NOT NULL, longName VARCHAR NOT NULL, description VARCHAR, type INTEGER NOT NULL);"
 
-  for isoimage in ${_isoimages[@]}
-  do
-	local version=$(cat "$srcdir/extracted/vmware-tools-$isoimage/manifest.xml" | grep -oPm1 "(?<=<version>)[^<]+")
-	sqlite3 "$database_filename" "INSERT INTO components(name,version,buildNumber,component_core_id,longName,description,type) VALUES('vmware-tools-$isoimage','$version',${_pkgver#*_},1,'$isoimage','$isoimage',1);"
-  done
-
 if [ -n "$_enable_macOS_guests" ]; then
   for isoimage in ${_fusion_isoimages[@]}
   do
@@ -197,14 +164,6 @@ prepare() {
 
   bash \
     "$(readlink -f "$srcdir/VMware-Workstation-${_pkgver/_/-}.${CARCH}.bundle")" \
-    --install-component "vmware-tools-linux-${_legacy_tools_version/_/-}.${CARCH}.component" \
-    --install-component "vmware-tools-linuxPreGlibc25-${_legacy_tools_version/_/-}.${CARCH}.component" \
-    --install-component "vmware-tools-netware-${_legacy_tools_version/_/-}.${CARCH}.component" \
-    --install-component "vmware-tools-solaris-${_legacy_tools_version/_/-}.${CARCH}.component" \
-    --install-component "vmware-tools-windows-${_tools_version/_/-}.${CARCH}.component" \
-    --install-component "vmware-tools-windows-x86-${_tools_version/_/-}.${CARCH}.component" \
-    --install-component "vmware-tools-winPre2k-${_legacy_tools_version/_/-}.${CARCH}.component" \
-    --install-component "vmware-tools-winPreVista-${_legacy_tools_version/_/-}.${CARCH}.component" \
     --extract "$extracted_dir"
 
 if [ -n "$_enable_macOS_guests" ]; then
@@ -275,11 +234,6 @@ package() {
   cp -r \
     vmware-vix-core/include/* \
     "$pkgdir/usr/include/vmware-vix"
-
-  for isoimage in ${_isoimages[@]}
-  do
-    install -Dm 644 "vmware-tools-$isoimage/$isoimage.iso" "$pkgdir/usr/lib/vmware/isoimages/$isoimage.iso"
-  done
 
   # Add Windows Vista SP1 and SP2 ISO images
   install -Dm 644 "$srcdir/winVistaSP1.iso" "$pkgdir/usr/lib/vmware/isoimages/winVistaSP1.iso"
