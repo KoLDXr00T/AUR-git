@@ -18,7 +18,7 @@ pkgname=vmware-workstation
 pkgver=17.6.4
 _buildver=24832109
 _pkgver=${pkgver}_${_buildver}
-pkgrel=4
+pkgrel=5
 pkgdesc='The industry standard for running multiple operating systems as virtual machines on a single Linux PC.'
 arch=(x86_64)
 url='https://www.vmware.com/products/workstation-for-linux.html'
@@ -58,8 +58,17 @@ backup=(
   'etc/conf.d/vmware'
 )
 
+DLAGENTS=("https::/usr/bin/curl -fLC - --connect-to softwareupdate-prod.broadcom.com:443:softwareupdate-prod.broadcom.com.cdn.cloudflare.net:443 --retry 3 --retry-delay 3 -o %o %u")
+
 source=(
   "VMware-Workstation-${pkgver}-${_buildver}.${CARCH}.bundle::https://archive.org/download/vmware-workstation-full-${pkgver}-${_buildver}.${CARCH}/VMware-Workstation-Full-${pkgver}-${_buildver}.${CARCH}.bundle"
+
+  "https://packages-prod.broadcom.com/tools/frozen/linux/linux.iso"
+  "https://packages-prod.broadcom.com/tools/frozen/linux/linuxPreGlibc25.iso"
+  "https://packages-prod.broadcom.com/tools/frozen/netware/netware.iso"
+  "https://packages-prod.broadcom.com/tools/frozen/solaris/solaris.iso"
+  "https://packages-prod.broadcom.com/tools/frozen/windows/winPre2k.iso"
+  "https://packages-prod.broadcom.com/tools/frozen/windows/winPreVista.iso"
 
   "winVistaSP1.iso::https://packages-prod.broadcom.com/tools/frozen/windows/WindowsToolsVista/SP1/windows.iso"
   "winVistaSP2.iso::https://packages-prod.broadcom.com/tools/frozen/windows/WindowsToolsVista/SP2/windows.iso"
@@ -84,6 +93,12 @@ source=(
   'linux6_16.patch'
 )
 sha256sums=('64fbfbaeacc48865468114362a2bbaade9110cc9e87bc3bd938396ba7f19a9bd'
+            '4e66b286b743d9cf788c487295b1dec3c6071d657674f650aadc23e8900758ff'
+            'aef8f747bd9a6e84d139c57b8c1f8e87c83a9b9df69cd09602030190fec21973'
+            '2c89993d811f5d90f7b0e2a286e9339907055e51ecb16f25509e5c4517326487'
+            '4666b0adfec6636ecda60bfab889cbf28f06f77526442628a70789fd76823e70'
+            'a17a11d65f841d213ffc2d6681acdf849c380e77055334c7a8127c1373991ebb'
+            'aab73d3ef4668beec725541c08c41042bb22fc86cd5563310fc170b952631d8a'
             '3b8f9d6e43f5d1dff0576cb93d008c14e0434d7233872f6c63988513d2bda5d1'
             '8f1cc3181055891b98672f715e0ca7bbe4018960eae945d7a4b9f640c44c3d79'
             '12e7b16abf8d7e858532edabb8868919c678063c566a6535855b194aac72d55e'
@@ -109,6 +124,9 @@ depends+=(
   vmware-keymaps
 )
 fi
+
+_extractedimages=(windows windows-x86)
+_isoimages=(linux linuxPreGlibc25 netware solaris winPre2k winPreVista winVistaSP1 winVistaSP2)
 
 if [ -n "$_enable_macOS_guests" ]; then
 
@@ -150,10 +168,21 @@ _create_database_file() {
   sqlite3 "$database_filename" "INSERT INTO settings(key,value,component_name) VALUES('db.schemaVersion','2','vmware-installer');"
   sqlite3 "$database_filename" "CREATE TABLE components(id INTEGER PRIMARY KEY, name VARCHAR NOT NULL, version VARCHAR NOT NULL, buildNumber INTEGER NOT NULL, component_core_id INTEGER NOT NULL, longName VARCHAR NOT NULL, description VARCHAR, type INTEGER NOT NULL);"
 
+  for isoimage in ${_extractedimages[@]}
+  do
+    local version=$(cat "$srcdir/extracted/vmware-tools-$isoimage/manifest.xml" | grep -oPm1 "(?<=<version>)[^<]+")
+    sqlite3 "$database_filename" "INSERT INTO components(name,version,buildNumber,component_core_id,longName,description,type) VALUES('vmware-tools-$isoimage','$version',${_pkgver#*_},1,'$isoimage','$isoimage',1);"
+  done
+
+  for isoimage in ${_isoimages[@]}
+  do
+	  sqlite3 "$database_filename" "INSERT INTO components(name,version,buildNumber,component_core_id,longName,description,type) VALUES('vmware-tools-$isoimage','1',${_pkgver#*_},1,'$isoimage','$isoimage',1);"
+  done
+
 if [ -n "$_enable_macOS_guests" ]; then
   for isoimage in ${_fusion_isoimages[@]}
   do
-	sqlite3 "$database_filename" "INSERT INTO components(name,version,buildNumber,component_core_id,longName,description,type) VALUES('vmware-tools-$isoimage','1',${_vmware_fusion_ver_full#*_},1,'$isoimage','$isoimage',1);"
+	  sqlite3 "$database_filename" "INSERT INTO components(name,version,buildNumber,component_core_id,longName,description,type) VALUES('vmware-tools-$isoimage','1',${_vmware_fusion_ver_full#*_},1,'$isoimage','$isoimage',1);"
   done
 fi
 }
@@ -235,9 +264,15 @@ package() {
     vmware-vix-core/include/* \
     "$pkgdir/usr/include/vmware-vix"
 
-  # Add Windows Vista SP1 and SP2 ISO images
-  install -Dm 644 "$srcdir/winVistaSP1.iso" "$pkgdir/usr/lib/vmware/isoimages/winVistaSP1.iso"
-  install -Dm 644 "$srcdir/winVistaSP2.iso" "$pkgdir/usr/lib/vmware/isoimages/winVistaSP2.iso"
+  for isoimage in ${_extractedimages[@]}
+  do
+    install -Dm 644 "vmware-tools-$isoimage/$isoimage.iso" "$pkgdir/usr/lib/vmware/isoimages/$isoimage.iso"
+  done
+
+  for isoimage in ${_isoimages[@]}
+  do
+    install -Dm 644 "$srcdir/$isoimage.iso" "$pkgdir/usr/lib/vmware/isoimages/$isoimage.iso"
+  done
 
   install -Dm 644 "vmware-workstation/doc/EULA" "$pkgdir/usr/share/doc/vmware-workstation/EULA"
   ln -s "/usr/share/doc/vmware-workstation/EULA" "$pkgdir/usr/share/licenses/$pkgname/VMware Workstation - EULA.txt"
