@@ -1,7 +1,7 @@
 pkgbase = vmware-workstation
 	pkgdesc = The industry standard for running multiple operating systems as virtual machines on a single Linux PC.
 	pkgver = 25H2
-	pkgrel = 1
+	pkgrel = 2
 	url = https://www.vmware.com/products/workstation-for-linux.html
 	install = vmware-workstation.install
 	arch = x86_64
@@ -32,7 +32,7 @@ pkgbase = vmware-workstation
 	options = !debug
 	backup = etc/vmware/config
 	backup = etc/conf.d/vmware
-	source = VMware-Workstation-25H2-24995812.x86_64.bundle::https://archive.org/download/vmware-workstation-full-25H2-24995812.x86_64/VMware-Workstation-Full-25H2-24995812.x86_64.bundle
+	source = VMware-Workstation-25H2-24995812.x86_64.bundle::https://archive.org/download/VMware-Workstation-Full-25H2-24995812.x86_64/VMware-Workstation-Full-25H2-24995812.x86_64.bundle
 	source = https://packages-prod.broadcom.com/tools/frozen/linux/linux.iso
 	source = https://packages-prod.broadcom.com/tools/frozen/linux/linuxPreGlibc25.iso
 	source = https://packages-prod.broadcom.com/tools/frozen/netware/netware.iso

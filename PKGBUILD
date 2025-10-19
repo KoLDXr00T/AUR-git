@@ -18,7 +18,7 @@ pkgname=vmware-workstation
 pkgver=25H2
 _buildver=24995812
 _pkgver=${pkgver}_${_buildver}
-pkgrel=1
+pkgrel=2
 pkgdesc='The industry standard for running multiple operating systems as virtual machines on a single Linux PC.'
 arch=(x86_64)
 url='https://www.vmware.com/products/workstation-for-linux.html'
@@ -59,7 +59,7 @@ backup=(
 )
 
 source=(
-  "VMware-Workstation-${pkgver}-${_buildver}.${CARCH}.bundle::https://archive.org/download/vmware-workstation-full-${pkgver}-${_buildver}.${CARCH}/VMware-Workstation-Full-${pkgver}-${_buildver}.${CARCH}.bundle"
+  "VMware-Workstation-${pkgver}-${_buildver}.${CARCH}.bundle::https://archive.org/download/VMware-Workstation-Full-${pkgver}-${_buildver}.${CARCH}/VMware-Workstation-Full-${pkgver}-${_buildver}.${CARCH}.bundle"
 
   "https://packages-prod.broadcom.com/tools/frozen/linux/linux.iso"
   "https://packages-prod.broadcom.com/tools/frozen/linux/linuxPreGlibc25.iso"
