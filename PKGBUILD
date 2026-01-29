@@ -9,9 +9,9 @@ pkgname=(
     'virtualbox-bin'
     'virtualbox-bin-guest-iso'
     'virtualbox-bin-sdk')
-pkgver=7.2.4
-_build=170995
-_rev=110274
+pkgver=7.2.6
+_build=172322
+_sdk_commit=72af1bf47ae4fa0cbca89251155953051c5acd67
 pkgrel=1
 pkgdesc='Powerful x86 virtualization for enterprise as well as home use (Oracle branded non-OSE)'
 arch=('x86_64')
@@ -21,7 +21,7 @@ makedepends=(
     'at-spi2-core' # to satisfy pkgcheck
     'cairo' # to satisfy pkgcheck
     'gdk-pixbuf2' # to satisfy pkgcheck
-    'gtk2' # to satisfy pkgcheck
+    #'gtk2' # to satisfy pkgcheck
     'gtk3' # to satisfy pkgcheck
     'pango' # to satisfy pkgcheck
     'python'
@@ -31,9 +31,9 @@ makedepends=(
     'python-wheel')
 source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver}-${_build}-Linux_amd64.run"
         "https://download.virtualbox.org/virtualbox/${pkgver}/VirtualBoxSDK-${pkgver}-${_build}.zip"
-        "VBoxAuth-r${_rev}.h"::"https://www.virtualbox.org/svn/vbox/trunk/include/VBox/VBoxAuth.h?p=${_rev}"
-        "VBoxAuthPAM-r${_rev}.c"::"https://www.virtualbox.org/svn/vbox/trunk/src/VBox/HostServices/auth/pam/VBoxAuthPAM.c?p=${_rev}"
-        "VBoxAuthSimple-r${_rev}.cpp"::"https://www.virtualbox.org/svn/vbox/trunk/src/VBox/HostServices/auth/simple/VBoxAuthSimple.cpp?p=${_rev}"
+        "VBoxAuth-g${_sdk_commit:0:7}.h"::"https://github.com/VirtualBox/virtualbox/blob/${_sdk_commit}/include/VBox/VBoxAuth.h"
+        "VBoxAuthPAM-g${_sdk_commit:0:7}.c"::"https://github.com/VirtualBox/virtualbox/blob/${_sdk_commit}/src/VBox/HostServices/auth/pam/VBoxAuthPAM.c"
+        "VBoxAuthSimple-g${_sdk_commit:0:7}.cpp"::"https://github.com/VirtualBox/virtualbox/blob/${_sdk_commit}/src/VBox/HostServices/auth/simple/VBoxAuthSimple.cpp"
         'dkms.conf'
         'vboxreload'
         '60-vboxdrv.rules'
@@ -43,11 +43,11 @@ source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver
         'LICENSE.sdk'
         '013-Makefile.patch')
 noextract=("VirtualBoxSDK-${pkgver}-${_build}.zip")
-sha256sums=('df756c7b8a90015182f85772eb655abdd8af52aa1f973379a505beefcc7f4499'
-            'da755498b14d9a9c5e5885ea6f3e8ca581af2a1bcb18b91895637eefa17f71b4'
-            'c344b7196963a1d51f730b52836e7fcc91ace4c137995b91dc00c12205f097cd'
-            'be189d96a70820aadcea24453c696275c7c7b9453ac7157b176d93a95796bdc8'
-            '7ac1fff6f00a106fbc3fdb7e388f6072e8afb61f4352dfc530d8825222d202cd'
+sha256sums=('190733b1923ba4820c4c555cbfbada7c31c762988d687fda70d14f9d64b6bfe4'
+            'f39862b54e587b0b1f2ef7c459b36d1df48bf0e681c0ed88ccec2b1b701e040c'
+            '5dcf6a9bec94a9cf52409f4fdb1b94401c90bd48be95bfd83448c14d99f93c1c'
+            'de7e028cd5f4921ebcac90d07889ef1eedaee7c297e86986bd735b8962e0e1d7'
+            'd33d191dbc2cbf6f1ed8e3afa1cf1a6df1f8baa01998724954347b5b51df5c1f'
             '63f1e9eabedec2170bd0589aaa2bf5025ff8f8ec1764cc4823cbe446e9ce1388'
             '4001b5927348fe669a541e80526d4f9ea91b883805f102f7d571edbb482a9b9d'
             '9c5238183019f9ebc7d92a8582cad232f471eab9d3278786225abc1a1c7bf66e'
@@ -231,9 +231,9 @@ package_virtualbox-bin-sdk() {
         cp -Pr --no-preserve='ownership' "$_dir" "${pkgdir}/${_installdir}/sdk"
     done < <(find "${pkgbase}-${pkgver}/sdk" -mindepth 1 -maxdepth 1 -type d ! -name 'installer' -print0)
     
-    install -D -m644 "VBoxAuth-r${_rev}.h"    "${pkgdir}/${_installdir}/sdk/bindings/auth/include/VBoxAuth.h"
-    install -D -m644 "VBoxAuthPAM-r${_rev}.c" "${pkgdir}/${_installdir}/sdk/bindings/auth/VBoxAuthPAM.cpp"
-    install -D -m644 "VBoxAuthSimple-r${_rev}.cpp" "${pkgdir}/${_installdir}/sdk/bindings/auth/VBoxAuthSimple.cpp"
+    install -D -m644 "VBoxAuth-g${_sdk_commit:0:7}.h"    "${pkgdir}/${_installdir}/sdk/bindings/auth/include/VBoxAuth.h"
+    install -D -m644 "VBoxAuthPAM-g${_sdk_commit:0:7}.c" "${pkgdir}/${_installdir}/sdk/bindings/auth/VBoxAuthPAM.cpp"
+    install -D -m644 "VBoxAuthSimple-g${_sdk_commit:0:7}.cpp" "${pkgdir}/${_installdir}/sdk/bindings/auth/VBoxAuthSimple.cpp"
     install -D -m644 LICENSE.sdk "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
     
     python -m installer --destdir="$pkgdir" "${pkgbase}-${pkgver}/sdk/installer/python/vboxapi/dist"/*.whl
