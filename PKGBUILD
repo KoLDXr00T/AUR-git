@@ -12,7 +12,7 @@ pkgname=(
 pkgver=7.2.6
 _build=172322
 _sdk_commit=72af1bf47ae4fa0cbca89251155953051c5acd67
-pkgrel=1
+pkgrel=2
 pkgdesc='Powerful x86 virtualization for enterprise as well as home use (Oracle branded non-OSE)'
 arch=('x86_64')
 url='https://www.virtualbox.org/'
@@ -31,9 +31,9 @@ makedepends=(
     'python-wheel')
 source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver}-${_build}-Linux_amd64.run"
         "https://download.virtualbox.org/virtualbox/${pkgver}/VirtualBoxSDK-${pkgver}-${_build}.zip"
-        "VBoxAuth-g${_sdk_commit:0:7}.h"::"https://github.com/VirtualBox/virtualbox/blob/${_sdk_commit}/include/VBox/VBoxAuth.h"
-        "VBoxAuthPAM-g${_sdk_commit:0:7}.c"::"https://github.com/VirtualBox/virtualbox/blob/${_sdk_commit}/src/VBox/HostServices/auth/pam/VBoxAuthPAM.c"
-        "VBoxAuthSimple-g${_sdk_commit:0:7}.cpp"::"https://github.com/VirtualBox/virtualbox/blob/${_sdk_commit}/src/VBox/HostServices/auth/simple/VBoxAuthSimple.cpp"
+        "VBoxAuth-g${_sdk_commit:0:7}.h"::"https://raw.githubusercontent.com/VirtualBox/virtualbox/${_sdk_commit}/include/VBox/VBoxAuth.h"
+        "VBoxAuthPAM-g${_sdk_commit:0:7}.c"::"https://raw.githubusercontent.com/VirtualBox/virtualbox/${_sdk_commit}/src/VBox/HostServices/auth/pam/VBoxAuthPAM.c"
+        "VBoxAuthSimple-g${_sdk_commit:0:7}.cpp"::"https://raw.githubusercontent.com/VirtualBox/virtualbox/${_sdk_commit}/src/VBox/HostServices/auth/simple/VBoxAuthSimple.cpp"
         'dkms.conf'
         'vboxreload'
         '60-vboxdrv.rules'
@@ -45,9 +45,9 @@ source=("http://download.virtualbox.org/virtualbox/${pkgver}/VirtualBox-${pkgver
 noextract=("VirtualBoxSDK-${pkgver}-${_build}.zip")
 sha256sums=('190733b1923ba4820c4c555cbfbada7c31c762988d687fda70d14f9d64b6bfe4'
             'f39862b54e587b0b1f2ef7c459b36d1df48bf0e681c0ed88ccec2b1b701e040c'
-            '5dcf6a9bec94a9cf52409f4fdb1b94401c90bd48be95bfd83448c14d99f93c1c'
-            'de7e028cd5f4921ebcac90d07889ef1eedaee7c297e86986bd735b8962e0e1d7'
-            'd33d191dbc2cbf6f1ed8e3afa1cf1a6df1f8baa01998724954347b5b51df5c1f'
+            'f54c6a3e118e24ea36474b23e6376bf83ed945e76bb627257457c018f0e11018'
+            '0fe446cdc96d227e3f9a2d905d39ea2804c15560a42ff2dec207349f03ac9206'
+            'a2923c8828c540ae2e2b4da38c402892b8e16d19fb86af2ecb0ab080e3745c9e'
             '63f1e9eabedec2170bd0589aaa2bf5025ff8f8ec1764cc4823cbe446e9ce1388'
             '4001b5927348fe669a541e80526d4f9ea91b883805f102f7d571edbb482a9b9d'
             '9c5238183019f9ebc7d92a8582cad232f471eab9d3278786225abc1a1c7bf66e'
