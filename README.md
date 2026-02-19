@@ -8,7 +8,7 @@
  - https://aur.archlinux.org/packages/virtualbox-bin
  - https://aur.archlinux.org/packages/visual-studio-code-bin
  - https://aur.archlinux.org/packages/vmware-workstation
-
+ - https://aur.archlinux.org/packages/motrix-bin
 
 
 steps:
