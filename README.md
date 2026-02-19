@@ -20,3 +20,6 @@ steps:
 
 debug :
 - git ls-remote --heads xrepo
+
+to-do :
+- add a script that automatically do the "steps" , add the given package to the packages list and push to origin.
