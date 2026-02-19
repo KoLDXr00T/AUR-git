@@ -1,5 +1,13 @@
 # AUR-git
- packages that i use from AUR
+ packages that i use from AUR :
+ - https://aur.archlinux.org/packages/brave-bin
+ - https://aur.archlinux.org/packages/github-desktop-bin
+ - https://aur.archlinux.org/packages/google-chrome
+ - https://aur.archlinux.org/packages/uefitool
+ - https://aur.archlinux.org/packages/vesktop
+ - https://aur.archlinux.org/packages/virtualbox-bin
+ - https://aur.archlinux.org/packages/visual-studio-code-bin
+ - https://aur.archlinux.org/packages/vmware-workstation
 
 
 
