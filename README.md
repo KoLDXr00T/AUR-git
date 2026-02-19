@@ -6,4 +6,4 @@
 steps:
 - git remote add xrepo https://github.com/xuser/xrepo.git
 - git fetch xrepo
-- git subtree add --prefix=xrepo xrepo main
+- git subtree add --prefix=xrepo xrepo master
